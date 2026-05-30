@@ -45,6 +45,9 @@
     <ClCompile Include="src\Ray.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\Frame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ThreadPoll.h">
@@ -81,6 +84,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\RGB.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Frame.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

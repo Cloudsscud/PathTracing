@@ -3,11 +3,13 @@
 #include<glm/glm.hpp>
 #include <optional>
 #include "Ray.h"
+#include "Material.h"
 
 struct HitInfo {
 	float m_hit_t;
 	glm::vec3 m_hit_pos;
 	glm::vec3 m_hit_normal;
+	const Material* m_material;
 };
 
 struct Shape {
