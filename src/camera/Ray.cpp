@@ -1,4 +1,4 @@
-#include "Ray.h"
+#include "camera/Ray.h"
 
 Ray Ray::objectFromWorld(const glm::mat4& object_from_world) const {
 	glm::vec3 oo = object_from_world * glm::vec4(m_origin, 1.f);

@@ -1,4 +1,4 @@
-#include "Scene.h"
+#include "shape/Scene.h"
 
 #include <glm/ext/matrix_transform.hpp>
 

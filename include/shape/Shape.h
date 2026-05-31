@@ -2,8 +2,8 @@
 
 #include<glm/glm.hpp>
 #include <optional>
-#include "Ray.h"
-#include "Material.h"
+#include "camera/Ray.h"
+#include "shape/Material.h"
 
 struct HitInfo {
 	float m_hit_t;

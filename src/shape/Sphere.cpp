@@ -1,4 +1,4 @@
-#include "Sphere.h"
+#include "shape/Sphere.h"
 
 std::optional<HitInfo> Sphere:: intersect(const Ray& ray, float tmin, float tmax) const
 {

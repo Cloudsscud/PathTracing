@@ -1,6 +1,6 @@
-#include "Film.h"
+#include "camera/Film.h"
 #include<fstream>
-#include "RGB.h"
+#include "util/RGB.h"
 
 Film::Film(size_t width, size_t height)
 	:m_width(width), m_height(height)

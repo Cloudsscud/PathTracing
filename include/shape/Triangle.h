@@ -1,5 +1,5 @@
 #pragma once
-#include "Shape.h"
+#include "shape/Shape.h"
 
 struct Triangle : public Shape {
 	glm::vec3 m_p0, m_p1, m_p2;	// ¶¥µã

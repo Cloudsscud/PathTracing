@@ -76,33 +76,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Film.cpp" />
-    <ClCompile Include="src\Frame.cpp" />
+    <ClCompile Include="src\camera\Camera.cpp" />
+    <ClCompile Include="src\camera\Film.cpp" />
+    <ClCompile Include="src\util\Frame.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Model.cpp" />
-    <ClCompile Include="src\Plane.cpp" />
-    <ClCompile Include="src\Ray.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\Sphere.cpp" />
-    <ClCompile Include="src\ThreadPoll.cpp" />
-    <ClCompile Include="src\Triangle.cpp" />
+    <ClCompile Include="src\shape\Model.cpp" />
+    <ClCompile Include="src\shape\Plane.cpp" />
+    <ClCompile Include="src\camera\Ray.cpp" />
+    <ClCompile Include="src\shape\Scene.cpp" />
+    <ClCompile Include="src\shape\Sphere.cpp" />
+    <ClCompile Include="src\thread\ThreadPoll.cpp" />
+    <ClCompile Include="src\shape\Triangle.cpp" />
+    <ClCompile Include="src\util\Progress.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Film.h" />
-    <ClInclude Include="include\Frame.h" />
-    <ClInclude Include="include\Material.h" />
-    <ClInclude Include="include\Model.h" />
-    <ClInclude Include="include\plane.h" />
-    <ClInclude Include="include\Ray.h" />
-    <ClInclude Include="include\RGB.h" />
-    <ClInclude Include="include\Scene.h" />
-    <ClInclude Include="include\Shape.h" />
-    <ClInclude Include="include\Sphere.h" />
-    <ClInclude Include="include\SpinLock.h" />
-    <ClInclude Include="include\ThreadPoll.h" />
-    <ClInclude Include="include\Triangle.h" />
+    <ClInclude Include="include\camera\Camera.h" />
+    <ClInclude Include="include\camera\Film.h" />
+    <ClInclude Include="include\util\Frame.h" />
+    <ClInclude Include="include\shape\Material.h" />
+    <ClInclude Include="include\shape\Model.h" />
+    <ClInclude Include="include\shape\plane.h" />
+    <ClInclude Include="include\camera\Ray.h" />
+    <ClInclude Include="include\util\Progress.h" />
+    <ClInclude Include="include\util\RGB.h" />
+    <ClInclude Include="include\shape\Scene.h" />
+    <ClInclude Include="include\shape\Shape.h" />
+    <ClInclude Include="include\shape\Sphere.h" />
+    <ClInclude Include="include\thread\SpinLock.h" />
+    <ClInclude Include="include\thread\ThreadPoll.h" />
+    <ClInclude Include="include\shape\Triangle.h" />
+    <ClInclude Include="include\util\RNG.h" />
+    <ClInclude Include="include\util\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,4 @@
-#include "Triangle.h"
+#include "shape/Triangle.h"
 
 std::optional<HitInfo> Triangle::intersect(const Ray& ray, float tmin, float tmax) const {
 	glm::vec3 e1 = m_p1 - m_p0;

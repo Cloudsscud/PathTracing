@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shape.h"
+#include "shape/Shape.h"
 
 struct Sphere : public Shape {
 	Sphere(glm::vec3 center, float r):m_center(center), m_radius(r) {}

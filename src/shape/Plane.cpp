@@ -1,4 +1,4 @@
-#include "Plane.h"
+#include "shape/Plane.h"
 
 std::optional<HitInfo> Plane::intersect(const Ray& ray, float tmin, float tmax) const {
 	glm::vec3 op = m_point - ray.m_origin;

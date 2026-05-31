@@ -1,5 +1,5 @@
 #pragma once
-#include "Shape.h"
+#include "shape/Shape.h"
 
 struct ShapeInstance {
 	const Shape& m_shape;	// object space 相交的物体

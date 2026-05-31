@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Film.h"
-#include "Ray.h"
+#include "camera/Film.h"
+#include "camera/Ray.h"
 
 // 规定相机为左手坐标系-lookAt z正方向
 class Camera {
