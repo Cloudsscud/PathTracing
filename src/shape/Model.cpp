@@ -1,10 +1,13 @@
 #include "shape/Model.h"
+#include "util/Timer.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 
 Model::Model(const std::filesystem::path& filename) {
+	TIMER("load model " + filename.string());
+
 	// 模型文件为 .obj格式
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec3> normals;

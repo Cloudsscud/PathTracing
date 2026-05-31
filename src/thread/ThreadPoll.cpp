@@ -1,4 +1,5 @@
 #include "thread/ThreadPoll.h"
+#include "util/Timer.h"
 
 ThreadPoll thread_poll{};	// 提供使用的线程池
 
@@ -8,6 +9,7 @@ void ThreadPoll::WorkerThread(ThreadPoll* master) {
 		Task* task = master->getTask(); // 获取任务时尚未执行任务，所以待执行任务数不变
 		if (task != nullptr) {
 			task->run();
+			delete task;
 			// 执行完之后才允许待执行任务数量减一
 			master->m_tasks_pending_count--;
 		}
@@ -76,27 +78,43 @@ Task* ThreadPoll::getTask() {
 
 class ParallelForTask :public Task{
 public:
-	ParallelForTask(size_t x, size_t y, const std::function<void(size_t, size_t)>& lambda)
-		:m_x(x), m_y(y), m_lambda(lambda)
+	ParallelForTask(size_t x, size_t y,size_t chunk_width, size_t chunk_height, const std::function<void(size_t, size_t)>& lambda)
+		:m_x(x), m_y(y), m_chunk_width(chunk_width), m_chunk_height(chunk_height), m_lambda(lambda)
 	{}
 
 	void run() override {
-		m_lambda(m_x, m_y);
+		for (int idx_x = 0; idx_x < m_chunk_width; ++idx_x) {
+			for (int idx_y = 0; idx_y < m_chunk_height; ++idx_y) {
+				m_lambda(m_x + idx_x, m_y + idx_y);
+			}
+		}
 	}
 
 private:
 	std::function<void(size_t, size_t)> m_lambda;
-	size_t m_x, m_y;
+	size_t m_x, m_y, m_chunk_width, m_chunk_height;
 };
 
-void ThreadPoll::parallelFor(size_t width, size_t height, const std::function<void(size_t, size_t)>& lambda) {
+void ThreadPoll::parallelFor(size_t width, size_t height, const std::function<void(size_t, size_t)>& lambda, bool complex) {
+	TIMER("parallerFor");
 	SpinLockGuard guard(m_tasks_lock);
 
-	for (size_t x = 0; x < width; ++x) {
-		for (size_t y = 0; y < height; ++y) {
-			m_tasks_pending_count++;
-			m_tasks.push(new ParallelForTask(x, y, lambda));
-		}
-	}
+	float chunk_width_float = static_cast<float>(width) / sqrt(complex ? 16 : 1) / sqrt(m_threads.size());
+	float chunk_height_float = static_cast<float>(height) / sqrt(complex ? 16 : 1) / sqrt(m_threads.size());
+	size_t chunk_width = std::ceil(chunk_width_float);
+	size_t chunk_height = std::ceil(chunk_height_float);
 
+	for (size_t x = 0; x < width; x+=chunk_width) {
+		if (x + chunk_width > width)
+			chunk_width = width - x;
+		for (size_t y = 0; y < height; y+=chunk_height) {
+			if (y + chunk_height > height)
+				chunk_height = height - y;
+
+			m_tasks_pending_count++;
+			m_tasks.push(new ParallelForTask(x, y, chunk_width, chunk_height, lambda));
+			chunk_height = std::ceil(chunk_height_float);
+		}
+		chunk_width = std::ceil(chunk_width_float);
+	}
 }

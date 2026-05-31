@@ -12,6 +12,7 @@
 struct Task {
 public:
 	virtual void run() = 0;
+	virtual ~Task() = default;
 };
 
 // 线程池, 通过线程来管理Task类，只允许在主线程中添加任务
@@ -26,7 +27,7 @@ public:
 	void addTask(Task* task);	// 向线程池的任务列表尾部添加Task
 	Task* getTask();	// 获取头部Task，并从任务列表弹出
 
-	void parallelFor(size_t width, size_t height, const std::function<void(size_t, size_t)>& lambda);	// 并行for执行pixel设置
+	void parallelFor(size_t width, size_t height, const std::function<void(size_t, size_t)>& lambda, bool complex = true);	// 并行for执行pixel设置
 private:
 	std::vector<std::thread> m_threads;	// 线程池本体，存放并管理已经创建的一批线程
 	std::queue<Task*> m_tasks;	// 线程池的等待执行任务列表
