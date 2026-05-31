@@ -19,6 +19,8 @@ public:
 	size_t getHeight() const { return m_height; }
 
 	Pixel getPixel(size_t x, size_t y) { return m_pixels[y * m_width + x]; }
+	void clear() { m_pixels.clear(); m_pixels.resize(m_width * m_height); }
+
 	void addSample(size_t x, size_t y, const glm::vec3& color) {
 		m_pixels[y * m_width + x].m_color += color;
 		m_pixels[y * m_width + x].m_sample_count++;

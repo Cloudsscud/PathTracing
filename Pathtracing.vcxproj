@@ -78,6 +78,9 @@
   <ItemGroup>
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\camera\Film.cpp" />
+    <ClCompile Include="src\renderer\BaseRenderer.cpp" />
+    <ClCompile Include="src\renderer\NormalRenderer.cpp" />
+    <ClCompile Include="src\renderer\TestRTRenderer.cpp" />
     <ClCompile Include="src\util\Frame.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shape\Model.cpp" />
@@ -92,6 +95,8 @@
   <ItemGroup>
     <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\camera\Film.h" />
+    <ClInclude Include="include\renderer\BaseRenderer.h" />
+    <ClInclude Include="include\renderer\TestRTRenderer.h" />
     <ClInclude Include="include\util\Frame.h" />
     <ClInclude Include="include\shape\Material.h" />
     <ClInclude Include="include\shape\Model.h" />
@@ -107,6 +112,7 @@
     <ClInclude Include="include\shape\Triangle.h" />
     <ClInclude Include="include\util\RNG.h" />
     <ClInclude Include="include\util\Timer.h" />
+    <ClInclude Include="include\renderer\NormalRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,7 +15,7 @@ public:
 		m_StartTimepoint = std::chrono::high_resolution_clock::now();
 	}
 
-	void Stop() {
+	void stop() {
 		auto endTimepoint = std::chrono::high_resolution_clock::now();
 		long long start = std::chrono::time_point_cast<std::chrono::milliseconds>(m_StartTimepoint).time_since_epoch().count();
 		long long end = std::chrono::time_point_cast<std::chrono::milliseconds>(endTimepoint).time_since_epoch().count();
@@ -25,7 +25,7 @@ public:
 
 	~Timer() {
 		if (!m_Stopped)
-			Stop();
+			stop();
 	}
 };
 

@@ -1,5 +1,7 @@
 #include "thread/ThreadPoll.h"
 
+ThreadPoll thread_poll{};	// 提供使用的线程池
+
 void ThreadPoll::WorkerThread(ThreadPoll* master) {
 	// 只要线程池生命周期存在，线程便一直处理Task
 	while (master->m_alive == 1) {

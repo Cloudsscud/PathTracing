@@ -51,6 +51,15 @@
     <ClCompile Include="src\util\Progress.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\BaseRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\NormalRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\TestRTRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thread\ThreadPoll.h">
@@ -102,6 +111,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\util\Timer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\renderer\BaseRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\renderer\NormalRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\renderer\TestRTRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

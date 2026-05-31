@@ -7,6 +7,7 @@
 //#include <mutex>	// 替换自旋锁
 #include"thread/SpinLock.h"
 
+
 // Task任务类, 通过重写void run()启动
 struct Task {
 public:
@@ -36,3 +37,5 @@ private:
 	std::atomic<int> m_alive;
 	std::atomic<int> m_tasks_pending_count = 0;	// 还未执行的任务数量,当且仅当添加和执行完之后才变化
 };
+
+extern ThreadPoll thread_poll;
