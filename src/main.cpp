@@ -14,7 +14,7 @@ int main() {
 	//Film film(1920, 1080);
 	Film film(192*4, 108*4);
 
-	Camera camera{ film, { 3, 1.2, 8 }, { 0, 0, 0 }, 45 };
+	Camera camera{ film, { 3, 1.5, 8 }, { 0, 0, 0 }, 45 };
 
 	Plane plane({
 		{0, 0, 0},
@@ -36,30 +36,31 @@ int main() {
 		{ 0, -0.5f, 0 }
 	);
 
-	//scene.addShape(
-	//	model,
-	//	{ {1,1,1}, true },
-	//	{ 0, 0, 0 }
-	//);
+	RNG r{123456};
+	scene.addShape(
+		model,
+		{ {1,1,1}, true, RGB{256*r.uniform(), 256 * r.uniform(), 256 * r.uniform()}},
+		{ 0, 0, 0 }
+	);
 
 	scene.addShape(
 		sphere,
-		{ {1,1,1}, false, RGB{255, 128, 128} },
+		{ {5,5,5}, false, RGB{255, 128, 128} },
 		{ 2.5f, 0, 0 }
 	);
 
 	scene.addShape(
 		sphere,
-		{ {1,1,1}, false, RGB{128, 128, 255} },
+		{ {4,4,4}, false, RGB{128, 128, 255} },
 		{ -2.5f, 0, 0 }
 	);
 
-	scene.addShape(
-		sphere,
-		{ {1,1,1}, true, RGB{128, 128, 255} },
-		{ 0, 0, -2 },
-		{ 0.4f,0.4f,0.4f }
-	);
+	//scene.addShape(
+	//	sphere,
+	//	{ {1,1,1}, true, RGB{128, 128, 255} },
+	//	{ 0, 0, -2 },
+	//	{ 0.4f,0.4f,0.4f }
+	//);
 
 	//NormalRenderer normal_renderer(camera, scene);
 	//normal_renderer.render(1, "normal.ppm");

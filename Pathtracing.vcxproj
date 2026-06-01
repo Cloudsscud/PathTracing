@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\accelate\BoundingBox.cpp" />
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\camera\Film.cpp" />
     <ClCompile Include="src\renderer\BaseRenderer.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="src\util\Progress.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\accelate\BoundingBox.h" />
     <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\camera\Film.h" />
     <ClInclude Include="include\renderer\BaseRenderer.h" />

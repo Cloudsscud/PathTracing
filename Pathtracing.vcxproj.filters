@@ -60,6 +60,9 @@
     <ClCompile Include="src\renderer\TestRTRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\accelate\BoundingBox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thread\ThreadPoll.h">
@@ -120,6 +123,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\renderer\TestRTRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\accelate\BoundingBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

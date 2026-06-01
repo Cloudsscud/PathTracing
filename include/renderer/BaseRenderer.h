@@ -16,7 +16,7 @@ class BaseRenderer {
 protected:
 	Camera& m_camera;
 	const Scene& m_scene;
-	RNG m_rng{static_cast<size_t>(std::time(0))};
+	RNG m_rng{23123227};
 public:
 	BaseRenderer(Camera& camera, const Scene& scene) :m_camera(camera), m_scene(scene){}
 
