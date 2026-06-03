@@ -2,32 +2,40 @@
 #include <accelate/BoundingBox.h>
 #include <shape/triangle.h>
 
-struct BVHNode {
-	BoundingBox m_bounds;
+// BVH树状节点
+struct BVHTreeNode {
+	BoundingBox m_box;
 	std::vector<Triangle> m_triangles;
-	BVHNode* m_child[2];
+	BVHTreeNode* m_child[2];	// 左右子树节点
 
 	void updateBounds() {
 		for (const auto& triangle : m_triangles) {
-			m_bounds.expand(triangle.m_p0);
-			m_bounds.expand(triangle.m_p1);
-			m_bounds.expand(triangle.m_p2);
+			m_box.expand(triangle.m_p0);
+			m_box.expand(triangle.m_p1);
+			m_box.expand(triangle.m_p2);
 		}
 	}
 };
 
+// 数组展开 alignas(32)
+struct alignas(32) BVHNode {
+	BoundingBox m_box;
+	union {
+		size_t m_index_child1;	// 右子树节点的下标
+		size_t m_index_tri;	// 不直接存三角形，降低节点大小
+	};
+
+	size_t m_tri_count; // 从index开始count个三角形连续存储，有助于缓存命中
+};
+
 class BVH :public Shape{
 private:
-	BVHNode* m_root;
+	std::vector<BVHNode> m_nodes;	// 存放所有节点:中间结点的左子树节点在其后一个，右子树节点从节点成员找
+	std::vector<Triangle> m_triangles; // 这种存储缓存友好,降低cache miss
 private:
-	void recusiveSplit(BVHNode* root, size_t depth);	// 沿最长轴 递归分割构建BVH树
+	void recusiveSplit(BVHTreeNode* root, size_t depth);	// 沿最长轴 递归分割构建BVH树
 
-	void recusiveIntersect(
-		BVHNode* node,
-		const Ray& ray,	float tmin, float& tmax,
-		std::optional<HitInfo>&closest_hit_info
-	) const;	// 递归与BVH节点包围盒求交,找最近的交点
-
+	size_t recusiveFlatten(BVHTreeNode* node);	// 将BVH树展平为数组结构
 public:
 	void build(std::vector<Triangle>&& triangles);	// 为三角形数组构建BVH加速结构的调用接口
 
