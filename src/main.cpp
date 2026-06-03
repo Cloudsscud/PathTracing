@@ -16,44 +16,44 @@ int main() {
 
 	Camera camera{ film, { 3, 1.5, 8 }, { 0, 0, 0 }, 45 };
 
-	Plane plane({
+	/*Plane plane({
 		{0, 0, 0},
 		{0, 1, 0}
-		});
+		});*/
 
 	Model model("models/bunny/bunny_10k.obj");
 
-	Sphere sphere{
-		{0, 0, 0},
-		1.f
-	};
+	//Sphere sphere{
+	//	{0, 0, 0},
+	//	1.f
+	//};
 
 	Scene scene;
 
-	scene.addShape(
-		plane,
-		{},
-		{ 0, -0.5f, 0 }
-	);
+	//scene.addShape(
+	//	plane,
+	//	{ {0.1,0.1,0.1}, false, RGB{255*0.2, 255 * 0.2, 255 * 0.2} },
+	//	{ 0, -0.5f, 0 }
+	//);
 
 	RNG r{123456};
 	scene.addShape(
 		model,
-		{ {1,1,1}, true, RGB{256*r.uniform(), 256 * r.uniform(), 256 * r.uniform()}},
+		{ {1,1,1}, true, RGB{255*r.uniform(), 255 * r.uniform(), 255 * r.uniform()}},
 		{ 0, 0, 0 }
 	);
 
-	scene.addShape(
-		sphere,
-		{ {5,5,5}, false, RGB{255, 128, 128} },
-		{ 2.5f, 0, 0 }
-	);
+	//scene.addShape(
+	//	sphere,
+	//	{ {1,0.6 ,0.5}, false, RGB{255, 128, 128} },
+	//	{ 2.5f, 0, 0 }
+	//);
 
-	scene.addShape(
-		sphere,
-		{ {4,4,4}, false, RGB{128, 128, 255} },
-		{ -2.5f, 0, 0 }
-	);
+	//scene.addShape(
+	//	sphere,
+	//	{ {0.7,0.8,1}, false, RGB{128, 128, 255} },
+	//	{ -2.5f, 0, 0 }
+	//);
 
 	//scene.addShape(
 	//	sphere,
@@ -67,6 +67,6 @@ int main() {
 	//film.clear();
 
 	TestRTRenderer rt_renderer{camera, scene};
-	rt_renderer.render(50, "test.ppm");
+	rt_renderer.render(128, "test.ppm");
 	return 0;
 }
