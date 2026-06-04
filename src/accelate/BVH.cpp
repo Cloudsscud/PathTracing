@@ -39,19 +39,43 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 	size_t max_axis = diag.x > diag.y ? (diag.x > diag.z ? 0 : 2) : (diag.y > diag.z ? 1 : 2);	// 0 1 2分别对应x y z
 	node->m_split_axis = max_axis;
 
-	float mid = node->m_box.m_min[max_axis] + diag[max_axis] * 0.5f;
 	std::vector<Triangle> child0_tri, child1_tri;
-	for (const Triangle& tri : node->m_triangles) {
-		if ((tri.m_p0[max_axis] + tri.m_p1[max_axis] + tri.m_p2[max_axis]) < 3.f * mid) {
-			// 左小右大
-			child0_tri.emplace_back(tri);
+	// 均分十二块来找最小代价的BVH
+	float min_cost = std::numeric_limits<float>::infinity();
+	for (size_t i = 0; i < 11; ++i) {
+		float mid = node->m_box.m_min[max_axis] + diag[max_axis] * (i + 1.f) / 12.f;	// 计算每种分割下的划分线
+		std::vector<Triangle> child0_tri_tmp, child1_tri_tmp;
+		BoundingBox child0_box{}, child1_box{};
+		// 以该划分线开始划分
+		for (const Triangle& tri : node->m_triangles) {
+			if ((tri.m_p0[max_axis] + tri.m_p1[max_axis] + tri.m_p2[max_axis]) < 3.f * mid) {
+				// 左小右大
+				child0_tri_tmp.push_back(tri);
+				child0_box.expand(tri.m_p0);
+				child0_box.expand(tri.m_p1);
+				child0_box.expand(tri.m_p2);
+			}
+			else {
+				child1_tri_tmp.push_back(tri);
+				child1_box.expand(tri.m_p0);
+				child1_box.expand(tri.m_p1);
+				child1_box.expand(tri.m_p2);
+			}
 		}
-		else {
-			child1_tri.emplace_back(tri);
+		// 任一个为空，则该划分方式下不可再分
+		if (child0_tri_tmp.empty() || child1_tri_tmp.empty()) {
+			continue;
+		}
+
+		// SAH计算划分的花费
+		float cost = child0_box.getArea() * child0_tri_tmp.size() + child1_box.getArea() * child1_tri_tmp.size();
+		if (cost < min_cost) {
+			min_cost = cost;
+			child0_tri = std::move(child0_tri_tmp);
+			child1_tri = std::move(child1_tri_tmp);
 		}
 	}
 
-	// 任一个为空，则该结点不可再分，则作为叶子节点
 	if (child0_tri.empty() || child1_tri.empty()) {
 		state.addLeafNode(node);
 		return;
@@ -76,7 +100,7 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 
 
 /*
-* 树状BVH加速求交 弃置
+* 树状BVH递归方式加速求交 弃置 转递归
 * 
 std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) const {
 	std::optional<HitInfo> hit_info{};
@@ -134,6 +158,7 @@ size_t BVH::recusiveFlatten(BVHTreeNode* node) {
 	return index;
 }
 
+// 迭代方式加速求交
 std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) const {
 	std::optional<HitInfo> closest_hit_info;
 
@@ -214,3 +239,11 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 //Mean Leaf Node Triangle Count : 1.22164
 //Max Leaf Node Triangle Count : 23
 //load model models / dragon / dragon_87k.obj : 146ms
+
+// 基于SAH的最长轴构建的BVH结构
+//Total Node Count : 164067
+//Leaf Node Count : 82034
+//Triangle Count : 87130
+//Mean Leaf Node Triangle Count : 1.06212
+//Max Leaf Node Triangle Count : 8
+//load model models / dragon / dragon_87k.obj : 1016ms
