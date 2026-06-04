@@ -4,6 +4,10 @@ void BoundingBox::expand(const glm::vec3& pos) {
 	m_min = glm::min(pos, m_min);
 	m_max = glm::max(pos, m_max);
 }
+void BoundingBox::expand(const BoundingBox& bound) {
+	m_min = glm::min(bound.m_min, m_min);
+	m_max = glm::max(bound.m_max, m_max);
+}
 
 bool BoundingBox::hasIntersection(const Ray& ray, float tmin, float tmax) const{
 	glm::vec3 t1 = (m_min - ray.m_origin) / ray.m_direction;

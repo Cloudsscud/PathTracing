@@ -22,7 +22,7 @@ int main() {
 		{0, 1, 0}
 		});*/
 
-	Model model("models/dragon/dragon_87k.obj");
+	Model model("models/dragon/dragon_871k.obj");
 
 	//Sphere sphere{
 	//	{0, 0, 0},
