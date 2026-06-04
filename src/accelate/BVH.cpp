@@ -1,19 +1,47 @@
 #include <accelate/BVH.h>
 #include <array>
+#include <util/DebugMacro.h>
+#include<iostream>
 
-void BVH::recusiveSplit(BVHTreeNode* root, size_t depth) {
+void BVH::build(std::vector<Triangle>&& triangles) {
+	size_t triangle_count = triangles.size();
+	auto* root = new BVHTreeNode;
+	root->m_triangles = std::move(triangles);
+	root->updateBounds();
+	root->m_depth = 1;
+
+	BVHState state{};
+
+	recusiveSplit(root, state);	// 创建树状BVH
+
+	// 展示BVH结构的测评指标
+	std::cout << "Total Node Count: " << state.total_node_count << std::endl;
+	std::cout << "Leaf Node Count: " << state.total_leaf_node_count << std::endl;
+	std::cout << "Triangle Count: " << triangle_count << std::endl;
+	std::cout << "Mean Leaf Node Triangle Count: " << static_cast<float>(triangle_count) / static_cast<float>(state.total_leaf_node_count) << std::endl;
+	std::cout << "Max Leaf Node Triangle Count: " << state.max_leaf_node_triangle_count << std::endl;
+
+	recusiveFlatten(root);	// 树状转线性
+}
+
+void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
+	state.total_node_count++;
+
 	// 沿最长轴 递归分割构建BVH树
-	if (root->m_triangles.size() <= 1 || depth == 30) {
+	if (node->m_triangles.size() <= 1 || node->m_depth > 32) {
+		// 无法再分，就作为叶子节点
+		state.addLeafNode(node);
 		return;
 	}
 
 	// 根据包围盒对角线找最长轴
-	glm::vec3 diag = root->m_box.getDiagonal();
+	glm::vec3 diag = node->m_box.getDiagonal();
 	size_t max_axis = diag.x > diag.y ? (diag.x > diag.z ? 0 : 2) : (diag.y > diag.z ? 1 : 2);	// 0 1 2分别对应x y z
+	node->m_split_axis = max_axis;
 
-	float mid = root->m_box.m_min[max_axis] + diag[max_axis] * 0.5f;
+	float mid = node->m_box.m_min[max_axis] + diag[max_axis] * 0.5f;
 	std::vector<Triangle> child0_tri, child1_tri;
-	for (const Triangle& tri : root->m_triangles) {
+	for (const Triangle& tri : node->m_triangles) {
 		if ((tri.m_p0[max_axis] + tri.m_p1[max_axis] + tri.m_p2[max_axis]) < 3.f * mid) {
 			// 左小右大
 			child0_tri.emplace_back(tri);
@@ -23,38 +51,32 @@ void BVH::recusiveSplit(BVHTreeNode* root, size_t depth) {
 		}
 	}
 
-	// 该结点不可再分
-	if (child0_tri.empty() || child1_tri.empty())
+	// 任一个为空，则该结点不可再分，则作为叶子节点
+	if (child0_tri.empty() || child1_tri.empty()) {
+		state.addLeafNode(node);
 		return;
+	}
 
 	BVHTreeNode* child0 = new BVHTreeNode{};
 	BVHTreeNode* child1 = new BVHTreeNode{};
 	child0->m_triangles = std::move(child0_tri);
 	child1->m_triangles = std::move(child1_tri);
+	child0->m_depth = child1->m_depth = node->m_depth + 1;
 
-	root->m_child[0] = child0;
-	root->m_child[1] = child1;
-	root->m_triangles.clear();
-	root->m_triangles.shrink_to_fit();
-	root->m_child[0]->updateBounds();
-	root->m_child[1]->updateBounds();
+	node->m_child[0] = child0;
+	node->m_child[1] = child1;
+	node->m_triangles.clear();
+	node->m_triangles.shrink_to_fit();
+	node->m_child[0]->updateBounds();
+	node->m_child[1]->updateBounds();
 
-	recusiveSplit(root->m_child[0], depth + 1);
-	recusiveSplit(root->m_child[1], depth + 1);
+	recusiveSplit(node->m_child[0], state);
+	recusiveSplit(node->m_child[1], state);
 }
 
-
-void BVH::build(std::vector<Triangle>&& triangles) {
-	auto* root = new BVHTreeNode;
-	root->m_triangles = std::move(triangles);
-	root->updateBounds();
-
-	recusiveSplit(root, 0);	// 创建树状BVH
-	recusiveFlatten(root);	// 树状转线性
-}
 
 /*
-* 树状BVH 弃置
+* 树状BVH加速求交 弃置
 * 
 std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) const {
 	std::optional<HitInfo> hit_info{};
@@ -91,7 +113,8 @@ size_t BVH::recusiveFlatten(BVHTreeNode* node) {
 	BVHNode bvh_node = {
 		node->m_box,
 		0,
-		static_cast<int>(node->m_triangles.size())
+		static_cast<uint16_t>(node->m_triangles.size()),
+		static_cast<uint8_t>(node->m_split_axis)
 	};
 	auto index = m_nodes.size();
 	m_nodes.push_back(bvh_node);
@@ -114,13 +137,26 @@ size_t BVH::recusiveFlatten(BVHTreeNode* node) {
 std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) const {
 	std::optional<HitInfo> closest_hit_info;
 
+	DEBUG_LINE(size_t bounds_test_count = 0, triangle_test_count = 0)
+
 	std::array<size_t, 32> stack;
 	auto ptr = stack.begin();
+
+	// 依据光线朝向优先选择比较主观上先相交的包围盒
+	glm::bvec3 dir_is_neg{
+		ray.m_direction.x < 0,
+		ray.m_direction.y < 0,
+		ray.m_direction.z < 0
+	};
+
+	// 光线方向向量的倒数，减少计算量
+	glm::vec3 inv_direction = 1.f / ray.m_direction;
 
 	size_t current = 0;
 	while (true) {
 		auto& node = m_nodes[current];
-		if (!node.m_box.hasIntersection(ray, tmin, tmax)) {
+		DEBUG_LINE(bounds_test_count++)
+		if (!node.m_box.hasIntersection(ray, inv_direction, tmin, tmax)) {
 			// 与当前包围盒无交点，则取出栈顶指向的节点
 			if (ptr == stack.begin()) break;	// 已经指向栈底，则无交点
 			current = *(--ptr);	// 继续去判断栈顶节点
@@ -128,20 +164,33 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 		}
 
 		if (node.m_tri_count == 0) {
-			// 节点为中间结点，则看左右子结点
-			// 前序判断
-			current++;	// 左子树结点在其后
-			*(ptr++) = node.m_index_child1;	// 右子树节点存到栈中
+			// 节点为中间结点，则看左右子结点的包围盒
+			//// 前序判断
+			//current++;	// 左子树结点在其后
+			//*(ptr++) = node.m_index_child1;	// 右子树节点存到栈中
+			
+			// 根据方向选择优先判断的包围盒
+			if (dir_is_neg[node.m_split_axis]) {
+				// 指向坐标轴负方向
+				*(ptr++) = current + 1;	// 后小的
+				current = node.m_index_child1;	// 先大的
+			}
+			else {
+				current++;	// 左子树结点在其后
+				*(ptr++) = node.m_index_child1;	// 右子树节点存到栈中
+			}
 		}
 		else {
-			// 叶子节点,开始求交点
+			// 叶子节点,开始求与三角形的交点
 			auto it = m_triangles.begin() + node.m_index_tri;
+			DEBUG_LINE(triangle_test_count += node.m_tri_count)
 			for (auto i = 0; i < node.m_tri_count;++i) {
 				auto hit_info = it->intersect(ray, tmin, tmax);
 				++it;
 				if (hit_info.has_value()) {
 					tmax = hit_info->m_hit_t;
 					closest_hit_info = hit_info;
+					closest_hit_info->bounds_depth = hit_info->bounds_depth;
 				}
 			}
 			// 看栈内是否还有需要判断但尚未判断的包围盒
@@ -150,5 +199,18 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 			current = *(--ptr);
 		}
 	}
+	if (closest_hit_info.has_value()) {
+		DEBUG_LINE(closest_hit_info->bounds_test_count = bounds_test_count)
+		DEBUG_LINE(closest_hit_info->triangle_test_count = triangle_test_count)
+	}
+
 	return closest_hit_info;
 }
+
+// 沿着最长轴的一半切分构建的BVH结构：
+//Total Node Count : 142643
+//Leaf Node Count : 71322
+//Triangle Count : 87130
+//Mean Leaf Node Triangle Count : 1.22164
+//Max Leaf Node Triangle Count : 23
+//load model models / dragon / dragon_87k.obj : 146ms

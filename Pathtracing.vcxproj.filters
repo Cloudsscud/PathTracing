@@ -66,6 +66,9 @@
     <ClCompile Include="src\accelate\BVH.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\DebugRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thread\ThreadPoll.h">
@@ -132,6 +135,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\accelate\BVH.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\DebugMacro.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\renderer\DebugRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

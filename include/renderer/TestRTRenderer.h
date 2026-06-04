@@ -1,4 +1,4 @@
 #pragma once
 
 #include "renderer/BaseRenderer.h"
-DEFINE_RENDERER(TestRT);
+DEFINE_RENDERER(TestRT)

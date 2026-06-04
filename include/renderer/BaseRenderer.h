@@ -10,7 +10,7 @@
 		Name##Renderer(Camera& camera, const Scene& scene) :BaseRenderer(camera, scene) {}	\
 	private:	\
 		glm::vec3 renderPixel(const glm::ivec2& pixel_coord) override;	\
-	}
+	};
 
 class BaseRenderer {
 protected:

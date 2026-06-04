@@ -7,6 +7,7 @@ void BaseRenderer::render(size_t spp, const std::filesystem::path& filename) {
 	TIMER("render " + std::to_string(spp) + " spp for " + filename.string());
 
 	auto& film = m_camera.getFilm();
+	film.clear();	// 清理上一次渲染的数据
 	Progress progress(film.getHeight() * film.getWidth() * spp, 20);
 
 	size_t current_spp = 0, increase = 1;

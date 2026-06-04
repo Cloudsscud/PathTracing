@@ -14,6 +14,7 @@ struct BoundingBox {
 	void expand(const glm::vec3& pos);
 
 	bool hasIntersection(const Ray& ray, float tmin, float tmax) const;
+	bool hasIntersection(const Ray& ray,const glm::vec3& inv_direction , float tmin, float tmax) const;
 
 	glm::vec3 getDiagonal() const { return m_max - m_min; }
 
