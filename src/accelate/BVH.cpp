@@ -34,47 +34,47 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 		return;
 	}
 
-	// 根据包围盒对角线找最长轴
 	glm::vec3 diag = node->m_box.getDiagonal();
-	size_t max_axis = diag.x > diag.y ? (diag.x > diag.z ? 0 : 2) : (diag.y > diag.z ? 1 : 2);	// 0 1 2分别对应x y z
-	node->m_split_axis = max_axis;
-
 	std::vector<Triangle> child0_tri, child1_tri;
-	// 均分十二块来找最小代价的BVH
+	// 自行判断最优切分轴，均分十二块来找最小代价的BVH
 	float min_cost = std::numeric_limits<float>::infinity();
-	for (size_t i = 0; i < 11; ++i) {
-		float mid = node->m_box.m_min[max_axis] + diag[max_axis] * (i + 1.f) / 12.f;	// 计算每种分割下的划分线
-		std::vector<Triangle> child0_tri_tmp, child1_tri_tmp;
-		BoundingBox child0_box{}, child1_box{};
-		// 以该划分线开始划分
-		for (const Triangle& tri : node->m_triangles) {
-			if ((tri.m_p0[max_axis] + tri.m_p1[max_axis] + tri.m_p2[max_axis]) < 3.f * mid) {
-				// 左小右大
-				child0_tri_tmp.push_back(tri);
-				child0_box.expand(tri.m_p0);
-				child0_box.expand(tri.m_p1);
-				child0_box.expand(tri.m_p2);
+	for (size_t axis = 0; axis < 3; ++axis) {
+		for (size_t i = 0; i < 11; ++i) {
+			float mid = node->m_box.m_min[axis] + diag[axis] * (i + 1.f) / 12.f;	// 计算每种分割下的划分线
+			std::vector<Triangle> child0_tri_tmp, child1_tri_tmp;
+			BoundingBox child0_box{}, child1_box{};
+			// 以该划分线开始划分
+			for (const Triangle& tri : node->m_triangles) {
+				if ((tri.m_p0[axis] + tri.m_p1[axis] + tri.m_p2[axis]) < 3.f * mid) {
+					// 左小右大
+					child0_tri_tmp.push_back(tri);
+					child0_box.expand(tri.m_p0);
+					child0_box.expand(tri.m_p1);
+					child0_box.expand(tri.m_p2);
+				}
+				else {
+					child1_tri_tmp.push_back(tri);
+					child1_box.expand(tri.m_p0);
+					child1_box.expand(tri.m_p1);
+					child1_box.expand(tri.m_p2);
+				}
 			}
-			else {
-				child1_tri_tmp.push_back(tri);
-				child1_box.expand(tri.m_p0);
-				child1_box.expand(tri.m_p1);
-				child1_box.expand(tri.m_p2);
+			// 任一个为空，则该划分方式下不可再分
+			if (child0_tri_tmp.empty() || child1_tri_tmp.empty()) {
+				continue;
 			}
-		}
-		// 任一个为空，则该划分方式下不可再分
-		if (child0_tri_tmp.empty() || child1_tri_tmp.empty()) {
-			continue;
-		}
 
-		// SAH计算划分的花费
-		float cost = child0_box.getArea() * child0_tri_tmp.size() + child1_box.getArea() * child1_tri_tmp.size();
-		if (cost < min_cost) {
-			min_cost = cost;
-			child0_tri = std::move(child0_tri_tmp);
-			child1_tri = std::move(child1_tri_tmp);
+			// SAH计算划分的花费
+			float cost = child0_box.getArea() * child0_tri_tmp.size() + child1_box.getArea() * child1_tri_tmp.size();
+			if (cost < min_cost) {
+				min_cost = cost;
+				child0_tri = std::move(child0_tri_tmp);
+				child1_tri = std::move(child1_tri_tmp);
+				node->m_split_axis = axis;
+			}
 		}
 	}
+
 
 	if (child0_tri.empty() || child1_tri.empty()) {
 		state.addLeafNode(node);
@@ -247,3 +247,11 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 //Mean Leaf Node Triangle Count : 1.06212
 //Max Leaf Node Triangle Count : 8
 //load model models / dragon / dragon_87k.obj : 1016ms
+
+// 基于SAH的自选轴构建的BVH结构
+//Total Node Count : 174195
+//Leaf Node Count : 87098
+//Triangle Count : 87130
+//Mean Leaf Node Triangle Count : 1.00037
+//Max Leaf Node Triangle Count : 3
+//load model models / dragon / dragon_87k.obj : 2365ms

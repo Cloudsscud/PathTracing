@@ -15,7 +15,7 @@ int main() {
 	//Film film(1920, 1080);
 	Film film(192*4, 108*4);
 
-	Camera camera{ film, { 3, 0, 0 }, { 0, 0, 0 }, 45 };
+	Camera camera{ film, { -3, 0, 0 }, { 0, 0, 0 }, 45 };
 
 	/*Plane plane({
 		{0, 0, 0},
