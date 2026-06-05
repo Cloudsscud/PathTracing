@@ -6,6 +6,12 @@ ThreadPoll thread_poll{};	// 提供使用的线程池
 void ThreadPoll::WorkerThread(ThreadPoll* master) {
 	// 只要线程池生命周期存在，线程便一直处理Task
 	while (master->m_alive == 1) {
+		// 工作线程会与主线程进行CPU资源竞争，所以当工作线程中没有任务时应当休眠一段时间
+		if(master->m_tasks.empty()) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(2));	// 休眠2ms
+			continue;
+		}
+
 		Task* task = master->getTask(); // 获取任务时尚未执行任务，所以待执行任务数不变
 		if (task != nullptr) {
 			task->run();

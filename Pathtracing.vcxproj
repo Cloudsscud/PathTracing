@@ -115,7 +115,7 @@
     <ClInclude Include="include\util\Frame.h" />
     <ClInclude Include="include\shape\Material.h" />
     <ClInclude Include="include\shape\Model.h" />
-    <ClInclude Include="include\shape\plane.h" />
+    <ClInclude Include="include\shape\Plane.h" />
     <ClInclude Include="include\camera\Ray.h" />
     <ClInclude Include="include\util\Progress.h" />
     <ClInclude Include="include\util\RGB.h" />

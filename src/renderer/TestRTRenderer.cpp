@@ -9,10 +9,8 @@ glm::vec3 TestRTRenderer::renderPixel(const glm::ivec2& pixel_coord) {
 
 	int count = 0;
 	while (true) {
-
 		auto hit_info = m_scene.intersect(ray);
-		count++;
-		if (hit_info.has_value() && count < 5) {
+		if (hit_info.has_value() && count < 32) {
 			color += beta * hit_info->m_material->m_emissive;
 			beta *= hit_info->m_material->m_albedo;
 
@@ -36,6 +34,7 @@ glm::vec3 TestRTRenderer::renderPixel(const glm::ivec2& pixel_coord) {
 				}
 			}
 			ray.m_direction = frame.worldFromLocal(light_direction);
+			count++;
 		}
 		else {
 			break;

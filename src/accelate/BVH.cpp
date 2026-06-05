@@ -5,7 +5,7 @@
 
 void BVH::build(std::vector<Triangle>&& triangles) {
 	size_t triangle_count = triangles.size();
-	auto* root = new BVHTreeNode;
+	auto* root = m_allocater.allocate();
 	root->m_triangles = std::move(triangles);
 	root->updateBounds();
 	root->m_depth = 1;
@@ -21,6 +21,9 @@ void BVH::build(std::vector<Triangle>&& triangles) {
 	std::cout << "Mean Leaf Node Triangle Count: " << static_cast<float>(triangle_count) / static_cast<float>(state.total_leaf_node_count) << std::endl;
 	std::cout << "Max Leaf Node Triangle Count: " << state.max_leaf_node_triangle_count << std::endl;
 
+	// 展平时需要对所有节点存为数组，所有三角形存到数组中，但vector的push_back时会频繁扩容与拷贝，而已经记录过相关总数量，可以直接扩够容量，防止性能消耗
+	m_nodes.reserve(state.total_node_count);
+	m_triangles.reserve(triangle_count);
 	recusiveFlatten(root);	// 树状转线性
 }
 
@@ -39,8 +42,11 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 
 	std::vector<size_t> bucket_tri_index[3][bucket_count];	// 存放沿某个轴的第某个桶的三角形在节点的下标
 	glm::vec3 diag = node->m_box.getDiagonal();
-	std::vector<Triangle> child0_tri, child1_tri;
-	// 自行判断最优切分轴，均分十二块来找最小代价的BVH
+
+	// 自行判断最优切分轴，均分十二块来找最小代价的BVH结构
+	std::vector<Triangle> child0_tri, child1_tri;	// 会频繁扩容，可以在找最优划分后直接扩够
+	BoundingBox min_child0_box{}, min_child1_box{};	// 最优划分的包围盒
+	size_t min_child0_tri_count{}, min_child1_tri_count{}; // 最优化分的三角形数量
 	float min_cost = std::numeric_limits<float>::infinity();
 	size_t min_split_axis = 0;
 	size_t min_split_index = 0;
@@ -64,7 +70,7 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 
 		BoundingBox left_bound = bucket_bound[0];
 		size_t left_tri_count = bucket_tri_count[0];
-		for (size_t i = 1; i < bucket_count-1; ++i) {
+		for (size_t i = 1; i <= bucket_count-1; ++i) {
 			BoundingBox right_bound{};
 			size_t right_tri_count{};
 			for (size_t j = bucket_count-1; j >= i; --j) {
@@ -81,6 +87,10 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 					min_split_axis = axis;
 					node->m_split_axis = axis;
 					min_split_index = i;
+					min_child0_box = left_bound;
+					min_child1_box = right_bound;
+					min_child0_tri_count = left_tri_count;
+					min_child1_tri_count = right_tri_count;
 				}
 			}
 			left_bound.expand(bucket_bound[i]);
@@ -94,12 +104,18 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 		return;
 	}
 	
-	BVHTreeNode* child0 = new BVHTreeNode{};
-	BVHTreeNode* child1 = new BVHTreeNode{};
+	// 大量碎片化的内存分配会降低性能
+	//BVHTreeNode* child0 = new BVHTreeNode{};
+	//BVHTreeNode* child1 = new BVHTreeNode{};
+	// 通过缓存分配来实现内存友好
+	BVHTreeNode* child0 = m_allocater.allocate();
+	BVHTreeNode* child1 = m_allocater.allocate();
 	node->m_child[0] = child0;
 	node->m_child[1] = child1;
 
 	child0->m_depth = child1->m_depth = node->m_depth + 1;
+	child0->m_triangles.reserve(min_child0_tri_count);
+	child1->m_triangles.reserve(min_child1_tri_count);
 	for (size_t bucket_index = 0; bucket_index < min_split_index; ++bucket_index) {
 		for (size_t tri_index : bucket_tri_index[min_split_axis][bucket_index]) {
 			child0->m_triangles.push_back(node->m_triangles[tri_index]);
@@ -112,8 +128,8 @@ void BVH::recusiveSplit(BVHTreeNode* node, BVHState& state) {
 	}
 	node->m_triangles.clear();
 	node->m_triangles.shrink_to_fit();
-	node->m_child[0]->updateBounds();
-	node->m_child[1]->updateBounds();
+	node->m_child[0]->m_box = min_child0_box;
+	node->m_child[1]->m_box = min_child1_box;
 
 	recusiveSplit(node->m_child[0], state);
 	recusiveSplit(node->m_child[1], state);
@@ -295,3 +311,9 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 //Max Leaf Node Triangle Count : 3
 //load model models / dragon / dragon_871k.obj : 4687ms		// 明显加快
 //render 128 spp for test.ppm : 3113ms
+
+// 优化：尽量避免空闲工作线程与主线程竞争CPU资源，并使用块缓存来分配节点
+//load model models / dragon / dragon_871k.obj : 2924ms
+
+// 优化：尽量避免vector扩容与拷贝
+//load model models / dragon / dragon_871k.obj : 2490ms

@@ -26,9 +26,9 @@ void Film::save(const std::filesystem::path& filename) {
 		Pixel pixel = getPixel(x, y);
 		RGB rgb(pixel.m_color / static_cast<float>(pixel.m_sample_count));
 		size_t idx = (x + y * m_width) * 3;
-		buffer[idx + 0] = rgb.m_r;
-		buffer[idx + 1] = rgb.m_g;
-		buffer[idx + 2] = rgb.m_b;
+		buffer[idx + 0] = static_cast<uint8_t>(rgb.m_r);
+		buffer[idx + 1] = static_cast<uint8_t>(rgb.m_g);
+		buffer[idx + 2] = static_cast<uint8_t>(rgb.m_b);
 	}, false);
 	thread_poll.wait();
 	file.write(reinterpret_cast<const char*>(buffer.data()), buffer.size());

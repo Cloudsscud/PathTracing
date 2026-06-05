@@ -98,7 +98,7 @@
     <ClInclude Include="include\shape\Model.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\shape\plane.h">
+    <ClInclude Include="include\shape\Plane.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\shape\Scene.h">
