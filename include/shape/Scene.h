@@ -1,12 +1,6 @@
 #pragma once
-#include "shape/Shape.h"
-
-struct ShapeInstance {
-	const Shape& m_shape;	// object space 相交的物体
-	Material m_material;	// 相交实例的材质信息
-	glm::mat4 m_world_from_object;
-	glm::mat4 m_object_from_world;
-};
+#include <shape/Shape.h>
+#include <accelate/SceneBVH.h>
 
 class Scene : public Shape {
 public:
@@ -23,6 +17,10 @@ public:
 		float tmax = std::numeric_limits<float>::infinity()
 	) const override;
 
+	void build() {
+		m_bvh.build(std::move(m_instances));
+	}
 private:
 	std::vector<ShapeInstance> m_instances;
+	SceneBVH m_bvh;
 };

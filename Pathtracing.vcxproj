@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_RADIANS;GLM_FROCE_DEPTH_ZERO_TO_ONE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLM_FORCE_LEFT_HANDED;GLM_FORCE_RADIANS;GLM_FORCE_DEPTH_ZERO_TO_ONE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)thirdparty\rapidobj\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClCompile Include="src\accelate\BoundingBox.cpp" />
     <ClCompile Include="src\accelate\BVH.cpp" />
+    <ClCompile Include="src\accelate\SceneBVH.cpp" />
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\camera\Film.cpp" />
     <ClCompile Include="src\renderer\BaseRenderer.cpp" />
@@ -106,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="include\accelate\BoundingBox.h" />
     <ClInclude Include="include\accelate\BVH.h" />
+    <ClInclude Include="include\accelate\SceneBVH.h" />
     <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\camera\Film.h" />
     <ClInclude Include="include\renderer\BaseRenderer.h" />

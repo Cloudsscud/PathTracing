@@ -22,4 +22,19 @@ struct BoundingBox {
 		glm::vec3 diag = getDiagonal();
 		return (diag.x * (diag.y + diag.z) + diag.y * diag.z) * 2;
 	}
+
+	// 获取包围盒的顶点
+	glm::vec3 getCorner(size_t index)const{
+		glm::vec3 corner = m_max;
+		// 根据下标的二进制位对应到某个顶点
+		if ((index & 0b1) == 0) corner.x = m_min.x;
+		if ((index & 0b10) == 0) corner.y = m_min.y;
+		if ((index & 0b100) == 0) corner.z = m_min.z;
+		return corner;
+	}
+
+	// 判断包围盒是否可用
+	bool isValid() const{
+		return m_max.x > m_min.x && m_max.y > m_min.y && m_max.z > m_min.z;
+	}
 };

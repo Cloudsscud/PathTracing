@@ -20,6 +20,7 @@ void BVH::build(std::vector<Triangle>&& triangles) {
 	std::cout << "Triangle Count: " << triangle_count << std::endl;
 	std::cout << "Mean Leaf Node Triangle Count: " << static_cast<float>(triangle_count) / static_cast<float>(state.total_leaf_node_count) << std::endl;
 	std::cout << "Max Leaf Node Triangle Count: " << state.max_leaf_node_triangle_count << std::endl;
+	std::cout << "Max Leaf Node Depth: " << state.max_leaf_node_depth << std::endl;
 
 	// 展平时需要对所有节点存为数组，所有三角形存到数组中，但vector的push_back时会频繁扩容与拷贝，而已经记录过相关总数量，可以直接扩够容量，防止性能消耗
 	m_nodes.reserve(state.total_node_count);
@@ -252,7 +253,6 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 				if (hit_info.has_value()) {
 					tmax = hit_info->m_hit_t;
 					closest_hit_info = hit_info;
-					closest_hit_info->bounds_depth = hit_info->bounds_depth;
 				}
 			}
 			// 看栈内是否还有需要判断但尚未判断的包围盒
@@ -261,10 +261,8 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 			current = *(--ptr);
 		}
 	}
-	if (closest_hit_info.has_value()) {
-		DEBUG_LINE(closest_hit_info->bounds_test_count = bounds_test_count)
-		DEBUG_LINE(closest_hit_info->triangle_test_count = triangle_test_count)
-	}
+	DEBUG_LINE(ray.bounds_test_count += bounds_test_count)
+	DEBUG_LINE(ray.triangle_test_count += triangle_test_count)
 
 	return closest_hit_info;
 }

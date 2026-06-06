@@ -32,7 +32,6 @@ private:
 	std::vector<std::thread> m_threads;	// 线程池本体，存放并管理已经创建的一批线程
 	std::queue<Task*> m_tasks;	// 线程池的等待执行任务列表
 	// 多个线程对m_tasks资源使用存在竞争
-	//std::mutex m_tasks_lock;	// 弃用，转为自旋锁
 	SpinLock m_tasks_lock;
 	//bool m_alive;				// 管理线程池的线程生命周期	改为原子变量
 	std::atomic<int> m_alive;

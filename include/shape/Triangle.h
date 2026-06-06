@@ -21,9 +21,13 @@ struct Triangle : public Shape {
 		m_n2 = normal;
 	}
 
-	std::optional<HitInfo> intersect(
-		const Ray& ray,
-		float tmin = 1e-5,
-		float tmax = std::numeric_limits<float>::infinity()
-	) const override;
+	std::optional<HitInfo> intersect(const Ray& ray, float tmin, float tmax) const override;
+
+	BoundingBox getBounds() const override {
+		BoundingBox box{};
+		box.expand(m_p0);
+		box.expand(m_p1);
+		box.expand(m_p2);
+		return box;
+	}
 };

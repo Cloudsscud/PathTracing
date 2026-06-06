@@ -10,5 +10,5 @@ public:
 	RNG() : RNG(0) {};
 	RNG(size_t seed) {setSeed(seed);};
 	void setSeed(size_t seed) { m_gen.seed(seed); };
-	float uniform() { return m_uniform(m_gen); };
+	float uniform() { return m_uniform(m_gen); };	// 0-1
 };

@@ -23,7 +23,7 @@ Ray Camera::generateRay(const glm::ivec2& pixel_coord, const glm::vec2& offset) 
 	// [0, 1] --> [-1, 1]
 	ndc = 2.f * ndc - 1.f;
 
-	glm::vec4 clip{ ndc, 0.f, 1.f };
+	glm::vec4 clip{ ndc, 0, 1 };
 	glm::vec3 world = m_world_from_camera * m_camera_from_clip * clip;
 	return Ray{
 		m_pos,			// 光线从相机发出

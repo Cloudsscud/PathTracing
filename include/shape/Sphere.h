@@ -8,9 +8,8 @@ struct Sphere : public Shape {
 	glm::vec3 m_center;
 	float m_radius;
 
-	std::optional<HitInfo> intersect(
-		const Ray& ray,
-		float tmin = 1e-5,
-		float tmax = std::numeric_limits<float>::infinity()
-	) const override;
+	std::optional<HitInfo> intersect(const Ray& ray, float tmin, float tmax) const override;
+
+	BoundingBox getBounds() const override { return {m_center-m_radius, m_center+m_radius}; }
+
 };

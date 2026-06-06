@@ -9,10 +9,6 @@ struct HitInfo {
 	glm::vec3 m_hit_pos;
 	glm::vec3 m_hit_normal;
 	const Material* m_material;
-
-	DEBUG_LINE(size_t bounds_test_count = 0)
-	DEBUG_LINE(size_t triangle_test_count = 0)
-	DEBUG_LINE(size_t bounds_depth = 0)
 };
 
 // world space
@@ -25,4 +21,8 @@ struct Ray {
 	}
 
 	Ray objectFromWorld(const glm::mat4& object_from_world) const;
+
+	// 确保即使光线并没有与物体相交也可以得到调试信息
+	DEBUG_LINE(mutable size_t bounds_test_count = 0)
+	DEBUG_LINE(mutable size_t triangle_test_count = 0)
 };

@@ -12,9 +12,7 @@ struct BVHTreeNode {
 
 	void updateBounds() {
 		for (const auto& triangle : m_triangles) {
-			m_box.expand(triangle.m_p0);
-			m_box.expand(triangle.m_p1);
-			m_box.expand(triangle.m_p2);
+			m_box.expand(triangle.getBounds());
 		}
 	}
 };
@@ -36,10 +34,12 @@ struct BVHState {
 	size_t total_node_count{}; // 结构中的总节点数
 	size_t total_leaf_node_count{}; // 结构中的叶节点数
 	size_t max_leaf_node_triangle_count{}; // 叶子节点中最多的三角形数
+	size_t max_leaf_node_depth{}; // 叶子节点中最大深度
 
 	void addLeafNode(BVHTreeNode* node) {
 		total_leaf_node_count++;
 		max_leaf_node_triangle_count = std::max(max_leaf_node_triangle_count, node->m_triangles.size());
+		max_leaf_node_depth = std::max(max_leaf_node_depth, node->m_depth);
 	}
 };
 
@@ -80,4 +80,5 @@ public:
 	void build(std::vector<Triangle>&& triangles);	// 为三角形数组构建BVH加速结构的调用接口
 
 	std::optional<HitInfo> intersect(const Ray& ray, float tmin, float tmax) const override;	// BVH加速与光线求交的调用接口
+	BoundingBox getBounds() const override { return m_nodes[0].m_box; }	// BVH包围盒为根节点包围盒
 };

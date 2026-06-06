@@ -33,6 +33,8 @@ Model::Model(const std::filesystem::path& filename) {
 					result.attributes.positions[index.position_index * 3 + 2]
 				};
 
+				bool has_valid_normal = false;
+
 				if (index.normal_index >= 0) {
 					auto index = shape.mesh.indices[index_offset];
 					glm::vec3 nor0 = {
@@ -52,10 +54,19 @@ Model::Model(const std::filesystem::path& filename) {
 						result.attributes.normals[index.normal_index * 3 + 1],
 						result.attributes.normals[index.normal_index * 3 + 2]
 					};
-					tri.push_back(Triangle{	pos0, pos1,pos2, nor0, nor1, nor2});
+
+					if(glm::length(nor0) > 0.001f &&
+						glm::length(nor1) > 0.001f &&
+						glm::length(nor2) > 0.001f){
+						has_valid_normal = true;
+						tri.push_back(Triangle{ pos0, pos1,pos2, 
+												glm::normalize(nor0),
+												glm::normalize(nor1),
+												glm::normalize(nor2) });
+					}
 				}
-				else {
-					tri.push_back(Triangle{	pos0, pos1,pos2});
+				if (!has_valid_normal) {
+					tri.push_back(Triangle{ pos0, pos1,pos2 });
 				}
 			}
 			index_offset += num_face_vertices;

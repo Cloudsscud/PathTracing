@@ -105,22 +105,21 @@ void ThreadPoll::parallelFor(size_t width, size_t height, const std::function<vo
 	TIMER("parallerFor");
 	SpinLockGuard guard(m_tasks_lock);
 
-	float chunk_width_float = static_cast<float>(width) / sqrt(complex ? 16 : 1) / sqrt(m_threads.size());
-	float chunk_height_float = static_cast<float>(height) / sqrt(complex ? 16 : 1) / sqrt(m_threads.size());
+	float chunk_width_float = static_cast<float>(width) / std::sqrt(m_threads.size());
+	float chunk_height_float = static_cast<float>(height) / std::sqrt(m_threads.size());
+	if (complex) {
+		chunk_width_float /= std::sqrt(16);
+		chunk_height_float /= std::sqrt(16);
+	}
 	size_t chunk_width = std::ceil(chunk_width_float);
 	size_t chunk_height = std::ceil(chunk_height_float);
 
 	for (size_t x = 0; x < width; x+=chunk_width) {
-		if (x + chunk_width > width)
-			chunk_width = width - x;
+		size_t W = ((x + chunk_width) > width) ? (width - x) : chunk_width;
 		for (size_t y = 0; y < height; y+=chunk_height) {
-			if (y + chunk_height > height)
-				chunk_height = height - y;
-
+			size_t H = ((y + chunk_height) > height) ? (height - y) : chunk_height;
 			m_tasks_pending_count++;
-			m_tasks.push(new ParallelForTask(x, y, chunk_width, chunk_height, lambda));
-			chunk_height = std::ceil(chunk_height_float);
+			m_tasks.push(new ParallelForTask(x, y, W, H, lambda));
 		}
-		chunk_width = std::ceil(chunk_width_float);
 	}
 }
