@@ -315,3 +315,9 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 
 // 优化：尽量避免vector扩容与拷贝
 //load model models / dragon / dragon_871k.obj : 2490ms
+
+// scene_BVH 对100个shape（90%model/10%sphere + plane）
+// render 128 spp for test.ppm : 6319ms
+// 
+// scene_BVH 对10000个shape（90%model/10%sphere + plane）
+// render 128 spp for test.ppm : 54545ms

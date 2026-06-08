@@ -24,7 +24,7 @@ glm::vec3 TestRTRenderer::renderPixel(const glm::ivec2& pixel_coord) {
 				light_direction = { -view_direction.x, view_direction.y, -view_direction.z };
 			}
 			else {
-				// 漫反射，均匀采样
+				// 漫反射，拒绝采样
 				do {
 					light_direction = { m_rng.uniform(),m_rng.uniform(),m_rng.uniform() };
 					light_direction = light_direction * 2.f - 1.f;

@@ -72,6 +72,9 @@
     <ClCompile Include="src\accelate\SceneBVH.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\PathTracingRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thread\ThreadPoll.h">
@@ -147,6 +150,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\accelate\SceneBVH.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\renderer\PathTracingRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

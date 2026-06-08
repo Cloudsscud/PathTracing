@@ -7,6 +7,7 @@
 #include "renderer/NormalRenderer.h"
 #include "renderer/TestRTRenderer.h"
 #include <renderer/DebugRenderer.h>
+#include <renderer/PathTracingRenderer.h>
 
 #include <iostream>
 
@@ -83,7 +84,10 @@ int main() {
 
 
 	TestRTRenderer rt_renderer{camera, scene};
-	rt_renderer.render(128, "test.ppm");
+	rt_renderer.render(128, "rt_test.ppm");
+	
+	PathTracingRenderer pt_renderer{camera, scene};
+	pt_renderer.render(128, "pt_test.ppm");
 
 
 	return 0;
