@@ -1,8 +1,13 @@
 #include <renderer/PathTracingRenderer.h>
 #include "util/Frame.h"
+#include <util/RNG.h>
 
-glm::vec3 PathTracingRenderer::renderPixel(const glm::ivec2& pixel_coord) {
-	auto ray = m_camera.generateRay(pixel_coord, { m_rng.uniform(), m_rng.uniform() });
+glm::vec3 PathTracingRenderer::renderPixel(const glm::ivec3& pixel_coord) {
+	thread_local RNG rng{ static_cast<size_t>(pixel_coord.x * 1000000+pixel_coord.y + pixel_coord.z * 100000) };	// 一个线程一个随机数生成器，减少多线程锁等待时间
+	// 同时防止同一个线程的随机数不随机，让种子与坐标关联；同时同像素多采样，种子也要与采样数关联
+
+
+	auto ray = m_camera.generateRay(pixel_coord, { rng.uniform(), rng.uniform() });
 
 	glm::vec3 beta = { 1,1,1 };
 	glm::vec3 L = { 0,0,0 };	// 在film对应坐标感受到的光照,即Lo(p0,w0->1)
@@ -15,7 +20,7 @@ glm::vec3 PathTracingRenderer::renderPixel(const glm::ivec2& pixel_coord) {
 		}
 		L += beta * hit_info->m_material->m_emissive;	// 光源处要先算
 
-		if (m_rng.uniform() > q) {
+		if (rng.uniform() > q) {
 			break;	// 俄罗斯轮盘赌未通过
 		}
 		beta /= q;
@@ -25,7 +30,7 @@ glm::vec3 PathTracingRenderer::renderPixel(const glm::ivec2& pixel_coord) {
 		glm::vec3 light_direction;
 		if (hit_info->m_material) {
 			glm::vec3 view_direction = frame.localFromWorld(-ray.m_direction);
-			light_direction = hit_info->m_material->sampleBRDF(view_direction, beta, m_rng);
+			light_direction = hit_info->m_material->sampleBSDF(hit_info->m_hit_pos, view_direction, beta, rng);
 
 			//float pdf = delta;
 			//float brdf = hit_info->m_material->m_albedo * delta / glm::abs(glm::dot(hit_info->m_hit_normal, glm::vec3(0, 1, 0));

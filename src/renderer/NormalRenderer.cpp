@@ -1,6 +1,6 @@
 #include "renderer/NormalRenderer.h"
 
-glm::vec3 NormalRenderer::renderPixel(const glm::ivec2& pixel_coord) {
+glm::vec3 NormalRenderer::renderPixel(const glm::ivec3& pixel_coord) {
 	auto ray = m_camera.generateRay(pixel_coord);
 	auto hit_info = m_scene.intersect(ray);
 	if (hit_info.has_value()) {

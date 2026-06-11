@@ -17,7 +17,7 @@ void BaseRenderer::render(size_t spp, const std::filesystem::path& filename) {
 		// renderer increase
 		thread_poll.parallelFor(film.getWidth(), film.getHeight(), [&](size_t x, size_t y) {
 			for (int i = 0; i < increase; ++i) {
-				film.addSample(x, y, renderPixel({ x, y }));
+				film.addSample(x, y, renderPixel({ x, y, current_spp+i }));	// 第三个参数为采样数，确保同一个像素的不同采样点有不同的随机数种子
 			}
 			progress.update(increase);
 		});
