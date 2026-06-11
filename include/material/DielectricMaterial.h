@@ -13,7 +13,7 @@ public:
 	{
 	}
 
-	glm::vec3 sampleBSDF(const glm::vec3& hit_point, const glm::vec3& view_direction, glm::vec3& beta, const RNG& rng) const override;
+	std::optional<BSDFSample> sampleBSDF(const glm::vec3& hit_point, const glm::vec3& view_direction, const RNG& rng) const override;
 
 private:
 	float m_ior;	// ’€…‰¬ 

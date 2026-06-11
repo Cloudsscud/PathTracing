@@ -30,7 +30,12 @@ glm::vec3 PathTracingRenderer::renderPixel(const glm::ivec3& pixel_coord) {
 		glm::vec3 light_direction;
 		if (hit_info->m_material) {
 			glm::vec3 view_direction = frame.localFromWorld(-ray.m_direction);
-			light_direction = hit_info->m_material->sampleBSDF(hit_info->m_hit_pos, view_direction, beta, rng);
+			auto bsdf_sample = hit_info->m_material->sampleBSDF(hit_info->m_hit_pos, view_direction, rng);
+			if (!bsdf_sample.has_value()) {
+				break;
+			}
+			beta *= bsdf_sample->m_bsdf * glm::abs(bsdf_sample->m_light_direction.y) / bsdf_sample->m_pdf;
+			light_direction = bsdf_sample->m_light_direction;
 
 			//float pdf = delta;
 			//float brdf = hit_info->m_material->m_albedo * delta / glm::abs(glm::dot(hit_info->m_hit_normal, glm::vec3(0, 1, 0));
