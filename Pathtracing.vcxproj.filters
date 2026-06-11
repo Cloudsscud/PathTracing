@@ -57,9 +57,6 @@
     <ClCompile Include="src\renderer\NormalRenderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\renderer\TestRTRenderer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\accelate\BoundingBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -73,6 +70,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\PathTracingRenderer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\DiffuseMaterial.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\SpecularMaterial.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,9 +116,6 @@
     <ClInclude Include="include\util\RGB.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\shape\Material.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\util\Frame.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -134,9 +134,6 @@
     <ClInclude Include="include\renderer\NormalRenderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\renderer\TestRTRenderer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="include\accelate\BoundingBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -153,6 +150,18 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\renderer\PathTracingRenderer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\sample\Spherical.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\material\Material.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\material\DiffuseMaterial.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\material\SpecularMaterial.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "thread/ThreadPoll.h"
 #include "util/Timer.h"
+#include <cmath>
 
 ThreadPoll thread_poll{};	// 提供使用的线程池
 

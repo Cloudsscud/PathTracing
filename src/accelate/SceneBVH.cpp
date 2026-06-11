@@ -251,7 +251,7 @@ std::optional<HitInfo> SceneBVH::intersect(const Ray& ray, float tmin, float tma
 		closest_hit_info->m_hit_pos = closest_instance->m_world_from_object * glm::vec4(closest_hit_info.value().m_hit_pos, 1.f);
 		// 法线经过缩放的变换矩阵发生变化 => 原先变换矩阵的逆的转置
 		closest_hit_info->m_hit_normal = glm::normalize(glm::vec3(glm::transpose(closest_instance->m_object_from_world) * glm::vec4(closest_hit_info->m_hit_normal, 0.f)));
-		closest_hit_info->m_material = &closest_instance->m_material;
+		closest_hit_info->m_material = closest_instance->m_material;
 	}
 
 	DEBUG_LINE(ray.bounds_test_count += bounds_test_count)

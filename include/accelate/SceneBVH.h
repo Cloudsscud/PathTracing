@@ -4,7 +4,7 @@
 
 struct ShapeInstance {
 	const Shape& m_shape;	// object space 相交的物体
-	Material m_material;	// 相交实例的材质信息
+	const Material* m_material;	// 相交实例的材质信息，多态调用
 	glm::mat4 m_world_from_object;
 	glm::mat4 m_object_from_world;
 

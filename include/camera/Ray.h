@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <shape/Material.h>
+#include <material/Material.h>
 #include <util/DebugMacro.h>
 
 struct HitInfo {

@@ -321,3 +321,6 @@ std::optional<HitInfo> BVH::intersect(const Ray& ray, float tmin, float tmax) co
 // 
 // scene_BVH 对10000个shape（90%model/10%sphere + plane）
 // render 128 spp for test.ppm : 54545ms
+
+// 性能影响问题：远处的物体与包围盒的求交次数过多，且对像素效果影响不大
+// 建议添加LOD+mipmap
