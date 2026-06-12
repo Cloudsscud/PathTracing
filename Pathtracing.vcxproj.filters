@@ -84,6 +84,9 @@
     <ClCompile Include="src\material\GroundMaterial.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\material\ConductorMaterial.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\thread\ThreadPoll.h">
@@ -174,6 +177,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\material\GroundMaterial.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\Complex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\material\ConductorMaterial.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

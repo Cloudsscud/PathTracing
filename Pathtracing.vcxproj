@@ -89,6 +89,7 @@
     <ClCompile Include="src\accelate\SceneBVH.cpp" />
     <ClCompile Include="src\camera\Camera.cpp" />
     <ClCompile Include="src\camera\Film.cpp" />
+    <ClCompile Include="src\material\ConductorMaterial.cpp" />
     <ClCompile Include="src\material\DielectricMaterial.cpp" />
     <ClCompile Include="src\material\DiffuseMaterial.cpp" />
     <ClCompile Include="src\material\GroundMaterial.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="include\accelate\SceneBVH.h" />
     <ClInclude Include="include\camera\Camera.h" />
     <ClInclude Include="include\camera\Film.h" />
+    <ClInclude Include="include\material\ConductorMaterial.h" />
     <ClInclude Include="include\material\DielectricMaterial.h" />
     <ClInclude Include="include\material\DiffuseMaterial.h" />
     <ClInclude Include="include\material\GroundMaterial.h" />
@@ -123,6 +125,7 @@
     <ClInclude Include="include\renderer\DebugRenderer.h" />
     <ClInclude Include="include\renderer\PathTracingRenderer.h" />
     <ClInclude Include="include\sample\Spherical.h" />
+    <ClInclude Include="include\util\Complex.h" />
     <ClInclude Include="include\util\DebugMacro.h" />
     <ClInclude Include="include\util\Frame.h" />
     <ClInclude Include="include\shape\Model.h" />

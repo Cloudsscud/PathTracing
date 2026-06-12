@@ -3,7 +3,7 @@
 #include <util/RNG.h>
 #include <glm/glm.hpp>
 
-constexpr float PI = 3.1415926;
+constexpr float PI = 3.14159265359;
 
 // ¾ùÔÈÔ²ÅÌ²ÉÑù
 inline glm::vec2 UniformSampleUnitDisk(const glm::vec2& u) {

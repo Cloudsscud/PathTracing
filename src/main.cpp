@@ -11,6 +11,7 @@
 #include <material/SpecularMaterial.h>
 #include <material/DielectricMaterial.h>
 #include <material/GroundMaterial.h>
+#include <material/ConductorMaterial.h>
 
 #include <iostream>
 
@@ -18,9 +19,9 @@ int main() {
 
 	Film film(192*4, 108*4);
 
-	Camera camera{ film, { 10, 1.5f,0 }, { 0, 0, 0 }, 45 };
+	Camera camera{ film, { -10, 1.5f,0 }, { 0, 0, 0 }, 45 };
 
-	//Model model("models/dragon/dragon_871k.obj");
+	Model model("models/dragon/dragon_871k.obj");
 
 	Sphere sphere{
 		{0, 0, 0},
@@ -33,7 +34,7 @@ int main() {
 	});
 
 	Scene scene;
-	RNG r{ 1234 };
+	RNG r{ 12345678 };
 	for (int i = -3; i <= 3; ++i) {
 		scene.addShape(
 			sphere,
@@ -42,6 +43,29 @@ int main() {
 			{ 0.8,0.8, 0.8 }
 		);
 	}
+	for (int i = -3; i <= 3; ++i) {
+		glm::vec3 c = RGB::generateHeatMapRGB((i + 3.f) / 6.f);
+
+		scene.addShape(
+			sphere,
+			new ConductorMaterial{ glm::vec3{2.f - c * 2.f}, glm::vec3{2.f + c * 3.f} },
+			{ 0, 2.5, i * 2 },
+			{ 0.8,0.8, 0.8 }
+		);
+	}
+
+	scene.addShape(
+		model,
+		new DielectricMaterial{1.8, RGB(128, 191, 131) },
+		{ -5,0.4, 2 },
+		{ 2,2,2 }
+	);
+	scene.addShape(
+		model,
+		new ConductorMaterial{ {0.1, 1.2,1.8}, {5, 2.5,2} },
+		{ -5,0.4, -2 },
+		{ 2,2,2 }
+	);
 
 	scene.addShape(
 		plane,

@@ -19,7 +19,7 @@ Camera::Camera(Film& film, const glm::vec3& pos, const glm::vec3& viewpoint, flo
 Ray Camera::generateRay(const glm::ivec2& pixel_coord, const glm::vec2& offset) const {
 	glm::vec2 ndc = (glm::vec2(pixel_coord) + offset) / glm::vec2(m_film.getWidth(), m_film.getHeight());	// 屏幕空间y向下
 	// ndc y向上
-	ndc = 1.f - ndc;
+	ndc.y = 1.f - ndc.y;
 	// [0, 1] --> [-1, 1]
 	ndc = 2.f * ndc - 1.f;
 

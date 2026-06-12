@@ -4,7 +4,6 @@
 #include<iostream>
 
 void SceneBVH::build(std::vector<ShapeInstance>&& instances) {
-	size_t instance_count = instances.size();
 	auto* root = m_allocater.allocate();
 	// 对实例进行分类
 	auto tmp = std::move(instances);
@@ -18,10 +17,12 @@ void SceneBVH::build(std::vector<ShapeInstance>&& instances) {
 			m_infinity_instances.push_back(instance);
 		}
 	}
+
 	root->updateBounds();
 	root->m_depth = 1;
 
 	SceneBVHState state{};
+	size_t instance_count = m_instances.size();
 
 	recusiveSplit(root, state);	// 创建树状SceneBVH
 

@@ -3,8 +3,8 @@
 Frame::Frame(const glm::vec3& normal) {
 	m_y_axis = glm::normalize(normal);	// 局部坐标系中y为法线
 	glm::vec3 up = glm::abs(normal.y) < 0.99999f ? glm::vec3{ 0, 1, 0 } : glm::vec3{ 0, 0, 1 };	// 防止y轴为0
-	m_x_axis = glm::cross(up, normal);	// x,z构成切面
-	m_z_axis = glm::cross(m_x_axis, m_y_axis);
+	m_x_axis = glm::normalize(glm::cross(up, normal));	// x,z构成切面
+	m_z_axis = glm::normalize(glm::cross(m_x_axis, m_y_axis));
 }
 
 glm::vec3 Frame::localFromWorld(const glm::vec3& world) {

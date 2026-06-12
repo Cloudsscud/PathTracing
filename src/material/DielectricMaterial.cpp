@@ -36,6 +36,6 @@ std::optional<BSDFSample> DielectricMaterial::sampleBSDF(const glm::vec3& hit_po
 	else {
 		// Õ∏…‰
 		glm::vec3 light_direction{ (-view_direction / etai_div_etat) + (cos_theta_t / etai_div_etat - cos_theta_i) * normal };
-		return BSDFSample{ m_albedo_t / glm::abs(light_direction.y), 1, light_direction };
+		return BSDFSample{ m_albedo_t/(etai_div_etat* etai_div_etat)/ glm::abs(view_direction.y), 1, light_direction};
 	}
 }
